@@ -24,97 +24,122 @@ informasi_paket_pt = [
 
 # Fungsi login untuk admin, maksimal 3 percobaan
 def admin_login():
-    for attempt in range(3):
-        print('\n=== Selamat Datang Admin FitClub ===\n')
-        username_admin = input('Masukkan username anda: ')
-        password_admin = input('Masukkan password anda: ')
+    while True:
+        input_konfirmasi = input('Apakah anda yakin login menggunakan credential admin? (y atau n): ').lower()
+        if input_konfirmasi == 'n':
+            return
+        elif input_konfirmasi == 'y':
+            for attempt in range(3):
+                print('\n=== Selamat Datang Admin FitClub ===\n')
+                username_admin = input('Masukkan username anda: ')
+                password_admin = input('Masukkan password anda: ')
 
-        # Cek username dan password sesuai admin_id
-        for admin in admin_id:
-            if username_admin == admin['username'] and password_admin == admin['password']:
-                print(f'\nLogin berhasil! Selamat datang {username_admin}!\n')
-                return username_admin
-            else:
-                print('\nUsername atau Password salah!\n')
-                input_utama = input('Apakah anda ingin mengulang login? (Y atau N): ').lower()
-                if input_utama == 'y':
-                    return admin_login()
+                # Cek username dan password sesuai admin_id
+                for admin in admin_id:
+                    if username_admin == admin['username'] and password_admin == admin['password']:
+                        print(f'\nLogin berhasil! Selamat datang {username_admin}!\n')
+                        return admin
                 else:
-                    return
-    else:
-        print('Anda gagal login 3 kali, silahkan tunggu 5 menit sebelum login!')
+                    print('\nUsername atau Password salah!\n')
+                    while True:
+                        input_utama = input('Kembali ke menu utama? (Y atau N): ').lower()
+                        if input_utama == 'y':
+                            return main_menu()
+                        elif input_utama == 'n':
+                            break
+                        else:
+                            print('input harus y atau n!')
+                            continue
+            else:
+                print('Anda gagal login 3 kali, silahkan tunggu 5 menit sebelum login!')
+                return
+        else:
+            print('input harus y atau n!')
+            continue
+
 
 # Menu khusus admin: lihat member, hapus, tambah, logout
-def menu_admin(username_admin):
-    if username_admin:
-        while True:
-            print('\n=== Menu Admin ===')
-            print('1. Lihat Informasi Member')
-            print('2. Hapus Member')
-            print('3. Tambah Member')
-            print('4. Logout')
-            input_menu = input('Masukkan pilihan (1-4): ')
-            if input_menu == '1':
-                tunjukkan_member()
-            elif input_menu == '2':
-                delete_member()
-            elif input_menu == '3':
-                tambah_member()
-            elif input_menu == '4':
-                print('Logout berhasil.')
-                return 
-            else:
-                print('Pilihan tidak valid.')
+def menu_admin(admin):
+    while True:
+        print('\n=== Menu Admin ===')
+        print('1. Lihat Informasi Member')
+        print('2. Hapus Member')
+        print('3. Tambah Member')
+        print('4. Menu Utama')
+        input_menu = input('Masukkan pilihan (1-4): ')
+        if input_menu == '1':
+            tunjukkan_member()
+        elif input_menu == '2':
+            delete_member()
+        elif input_menu == '3':
+            tambah_member()
+        elif input_menu == '4':
+            return 
+        else:
+            print('Pilihan tidak valid.')
 
 
 # Fungsi login untuk member: validasi nama_depan dan id_member
 def member_login():
-    for attempt in range(3):
-        print('\n=== Selamat Datang Member FitClub! ===\n')
-        while True:
-            try:
-                id_member_input = int(input('Masukkan ID member anda: '))
-                break
-            except ValueError:
-                print('ID harus berupa angka!')
+    while True:
+        input_konfirmasi = input('Apakah anda yakin login menggunakan credential member? (y atau n): ').lower()
+        if input_konfirmasi == 'n':
+            return
+        elif input_konfirmasi == 'y':            
+            for attempt in range(3):
+                print('\n=== Selamat Datang Member FitClub! ===\n')
+                while True:
+                    try:
+                        id_member_input = int(input('Masukkan ID member anda: '))
+                        break
+                    except ValueError:
+                        print('ID harus berupa angka!')
 
-        nama_depan_input = input('Masukkan nama depan anda: ').lower()
+                nama_depan_input = input('Masukkan nama depan anda: ').lower()
 
-        # Cari member yang cocok
-        for member in data_member:
-            if member['id_member'] == id_member_input and member['nama_depan'] == nama_depan_input:
-                return member
+                # Cari member yang cocok
+                for member in data_member:
+                    if member['id_member'] == id_member_input and member['nama_depan'] == nama_depan_input:
+                        return member
+                else:
+                    print('ID atau nama depan salah!\n')
+                    while True:
+                        input_utama = input('Kembali ke menu utama? (Y atau N): ').lower()
+                        if input_utama == 'y':
+                            return main_menu() 
+                        elif input_utama == 'n':
+                            break
+                        else:
+                            print('Input harus y atau n!')
+                            continue
+
+            else:
+                print('Gagal login 3 kali, silakan tunggu 5 menit.')
+                return
         else:
-            print('ID atau nama depan salah!\n')
-            input_utama = input('Kembali ke menu utama? (Y atau N): ').lower()
-            if input_utama == 'y':
-                return 
-    else:
-        print('Gagal login 3 kali, silakan tunggu 5 menit.')
-
+            print('Input harus y atau n!')
+            continue
 
 # Menu member: perpanjang membership, perpanjang PT, cek sisa, logout
 def menu_member(member):
-    if member:
-        while True:
-            print('\n=== Menu Member ===')
-            print('1. Perpanjang Membership')
-            print('2. Perpanjang Sesi Personal Trainer')
-            print('3. Cek Sisa Membership dan Sesi PT')
-            print('4. Logout')
-            input_menu = input('Masukkan pilihan (1-4): ')
-            if input_menu == '1':
-                payment_member(member)
-            elif input_menu == '2':
-                payment_member_pt(member)
-            elif input_menu == '3':
-                print(f"Membership tersisa: {member['sisa_membership_bulan']} bulan")
-                print(f"Sesi PT tersisa: {member['sisa_sesi_pt']} sesi")
-            elif input_menu == '4':
-                print('Logout berhasil.')
-                return
-            else:
-                print('Pilihan tidak valid.')
+    while True:
+        print('\n=== Menu Member ===')
+        print('1. Perpanjang Membership')
+        print('2. Perpanjang Sesi Personal Trainer')
+        print('3. Cek Sisa Membership dan Sesi PT')
+        print('4. Menu Utama')
+        input_menu = input('Masukkan pilihan (1-4): ')
+        if input_menu == '1':
+            payment_member(member)
+        elif input_menu == '2':
+            payment_member_pt(member)
+        elif input_menu == '3':
+            print(f"\nMembership tersisa: {member['sisa_membership_bulan']} bulan")
+            print(f"Sesi PT tersisa: {member['sisa_sesi_pt']} sesi")
+        elif input_menu == '4':
+            return
+        else:
+            print('Pilihan tidak valid.')
 
 # Menu untuk non-member: cek harga membership, daftar, atau kembali ke main menu
 def non_member_menu():
@@ -222,9 +247,9 @@ def proses_pembayaran(harga):
                 continue
             kembalian = bayar - harga
             if kembalian > 0:
-                print(f"Transaksi berhasil. Kembalian: Rp {kembalian}")
+                print(f"\nTransaksi berhasil. Kembalian: Rp {kembalian}")
             else:
-                print("Pembayaran pas.")
+                print("\nPembayaran pas.")
             return 'berhasil'
         except ValueError:
             print('Input harus angka.')
@@ -237,6 +262,9 @@ def daftar_member_baru():
             if nama_paket == paket['Nama Paket'].lower():
                 harga = paket['Harga Membership']
                 bulan = paket['jumlah_bulan_membership']
+                konfirmasi_input = input(f'Apakah anda yakin memilih paket {nama_paket}? (y atau n): ').lower()
+                if konfirmasi_input == 'n':
+                    return
                 if proses_pembayaran(harga) == 'berhasil':
                     input_id = input_id_unik()
                     nama_depan = input('Masukkan nama depan anda: ').lower()
@@ -277,9 +305,13 @@ def payment_member(member):
             if nama_paket == paket['Nama Paket'].lower():
                 bulan = paket['jumlah_bulan_membership']
                 harga = paket['Harga Membership']
+                konfirmasi_input = input(f'Apakah anda yakin memilih paket {nama_paket}? (y atau n): ').lower()
+                if konfirmasi_input == 'n':
+                    return
+
                 if proses_pembayaran(harga) == 'berhasil':
                     member['sisa_membership_bulan'] += bulan
-                    print(f"Membership anda diperpanjang menjadi {member['sisa_membership_bulan']} bulan")
+                    print(f"\nMembership anda diperpanjang menjadi {member['sisa_membership_bulan']} bulan")
                     return 
                 else:
                     continue
@@ -295,10 +327,15 @@ def payment_member_pt(member):
             if nama_paket == paket_pt['Nama Paket'].lower():
                 bulan = paket_pt['jumlah_sesi_pt']
                 harga = paket_pt['Harga pt']
+                konfirmasi_input = input(f'Apakah anda yakin memilih paket {nama_paket}? (y atau n): ').lower()
+                if konfirmasi_input == 'n':
+                    return
                 if proses_pembayaran(harga) == 'berhasil':
                     member['sisa_sesi_pt'] += bulan
-                    print(f'Membership anda diperpanjang menjadi {member['sisa_sesi_pt']}')
-                continue
+                    print(f'\nSesi PT anda diperpanjang menjadi {member['sisa_sesi_pt']} sesi')
+                    return
+                else:
+                    continue
         print('Nama paket tidak ditemukan.')
 
 # Validasi input ID baru (pastikan unik)
@@ -340,7 +377,7 @@ def main_menu():
             non_member_menu()
         elif pilihan == '4':
             print('Terima kasih! Program selesai.')
-            return False
+            return
         else:
             print('Pilihan tidak valid.')
 
