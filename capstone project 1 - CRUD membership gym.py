@@ -25,7 +25,7 @@ informasi_paket_pt = [
 # Fungsi login untuk admin, maksimal 3 percobaan
 def admin_login():
     while True:
-        input_konfirmasi = input('Apakah anda yakin login menggunakan credential admin? (y atau n): ').lower()
+        input_konfirmasi = input('Apakah anda yakin login menggunakan credential admin? (y atau n): ').lower().strip()
         if input_konfirmasi == 'n':
             return
         elif input_konfirmasi == 'y':
@@ -42,7 +42,7 @@ def admin_login():
                 else:
                     print('\nUsername atau Password salah!\n')
                     while True:
-                        input_utama = input('Kembali ke menu utama? (Y atau N): ').lower()
+                        input_utama = input('Kembali ke menu utama? (Y atau N): ').lower().strip()
                         if input_utama == 'y':
                             return main_menu()
                         elif input_utama == 'n':
@@ -82,7 +82,7 @@ def menu_admin(admin):
 # Fungsi login untuk member: validasi nama_depan dan id_member
 def member_login():
     while True:
-        input_konfirmasi = input('Apakah anda yakin login menggunakan credential member? (y atau n): ').lower()
+        input_konfirmasi = input('Apakah anda yakin login menggunakan credential member? (y atau n): ').lower().strip()
         if input_konfirmasi == 'n':
             return
         elif input_konfirmasi == 'y':            
@@ -95,7 +95,7 @@ def member_login():
                     except ValueError:
                         print('ID harus berupa angka!')
 
-                nama_depan_input = input('Masukkan nama depan anda: ').lower()
+                nama_depan_input = input('Masukkan nama depan anda: ').lower().strip()
 
                 # Cari member yang cocok
                 for member in data_member:
@@ -104,7 +104,7 @@ def member_login():
                 else:
                     print('ID atau nama depan salah!\n')
                     while True:
-                        input_utama = input('Kembali ke menu utama? (Y atau N): ').lower()
+                        input_utama = input('Kembali ke menu utama? (Y atau N): ').lower().strip()
                         if input_utama == 'y':
                             return main_menu() 
                         elif input_utama == 'n':
@@ -138,7 +138,7 @@ def menu_member(member):
             print(f"Sesi PT tersisa: {member['sisa_sesi_pt']} sesi")
         elif input_menu == '4':
             return
-        else:
+        else:   
             print('Pilihan tidak valid.')
 
 # Menu untuk non-member: cek harga membership, daftar, atau kembali ke main menu
@@ -159,8 +159,8 @@ def non_member_menu():
 # Fungsi menambah member (khusus admin)
 def tambah_member():
     input_id = input_id_unik()
-    nama_depan = input('Masukkan nama depan: ').lower()
-    nama_belakang = input('Masukkan nama belakang: ').lower()
+    nama_depan = input('Masukkan nama depan: ').lower().strip()
+    nama_belakang = input('Masukkan nama belakang: ').lower().strip()
     while True:
         try:
             umur = int(input('Masukkan umur: '))
@@ -207,7 +207,7 @@ def delete_member():
         # Cari member sesuai ID
         for member in data_member:
             if member['id_member'] == input_id:
-                konfirmasi = input(f"Yakin hapus {member['nama_depan']} {member['nama_belakang']}? (Y/N): ").lower()
+                konfirmasi = input(f"Yakin hapus {member['nama_depan']} {member['nama_belakang']}? (Y/N): ").lower().strip()
                 if konfirmasi == 'y':
                     data_member.remove(member)
                     print('Member dihapus.')
@@ -257,18 +257,18 @@ def proses_pembayaran(harga):
 def daftar_member_baru():
     tunjukkan_harga_membership()
     while True:
-        nama_paket = input('Pilih nama paket: ').lower()
+        nama_paket = input('Pilih nama paket: ').lower().strip()
         for paket in informasi_paket:
-            if nama_paket == paket['Nama Paket'].lower():
+            if nama_paket == paket['Nama Paket']:
                 harga = paket['Harga Membership']
                 bulan = paket['jumlah_bulan_membership']
-                konfirmasi_input = input(f'Apakah anda yakin memilih paket {nama_paket}? (y atau n): ').lower()
+                konfirmasi_input = input(f'Apakah anda yakin memilih paket {nama_paket}? (y atau n): ').lower().strip()
                 if konfirmasi_input == 'n':
                     return
                 if proses_pembayaran(harga) == 'berhasil':
                     input_id = input_id_unik()
-                    nama_depan = input('Masukkan nama depan anda: ').lower()
-                    nama_belakang = input('Masukkan nama belakang anda: ').lower()
+                    nama_depan = input('Masukkan nama depan anda: ').lower().strip()
+                    nama_belakang = input('Masukkan nama belakang anda: ').lower().strip()
                     while True:
                         try:
                             umur = int(input('Masukkan umur anda: '))
@@ -300,9 +300,9 @@ def daftar_member_baru():
 def payment_member(member):
     tunjukkan_harga_membership()
     while True:
-        nama_paket = input('Pilih paket: ').lower()
+        nama_paket = input('Pilih paket: ').lower().strip()
         for paket in informasi_paket:
-            if nama_paket == paket['Nama Paket'].lower():
+            if nama_paket == paket['Nama Paket']:
                 bulan = paket['jumlah_bulan_membership']
                 harga = paket['Harga Membership']
                 konfirmasi_input = input(f'Apakah anda yakin memilih paket {nama_paket}? (y atau n): ').lower()
@@ -322,12 +322,12 @@ def payment_member(member):
 def payment_member_pt(member):
     tunjukkan_harga_pt()
     while True:
-        nama_paket = input('Pilih paket PT: ').lower()
+        nama_paket = input('Pilih paket PT: ').lower().strip()
         for paket_pt in informasi_paket_pt:
-            if nama_paket == paket_pt['Nama Paket'].lower():
+            if nama_paket == paket_pt['Nama Paket']:
                 bulan = paket_pt['jumlah_sesi_pt']
                 harga = paket_pt['Harga pt']
-                konfirmasi_input = input(f'Apakah anda yakin memilih paket {nama_paket}? (y atau n): ').lower()
+                konfirmasi_input = input(f'Apakah anda yakin memilih paket {nama_paket}? (y atau n): ').lower().strip()
                 if konfirmasi_input == 'n':
                     return
                 if proses_pembayaran(harga) == 'berhasil':
