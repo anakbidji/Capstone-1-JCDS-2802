@@ -305,7 +305,7 @@ def payment_member(member):
             if nama_paket == paket['Nama Paket']:
                 bulan = paket['jumlah_bulan_membership']
                 harga = paket['Harga Membership']
-                konfirmasi_input = input(f'Apakah anda yakin memilih paket {nama_paket}? (y atau n): ').lower()
+                konfirmasi_input = input(f'Apakah anda yakin memilih paket {nama_paket}? (y atau n): ').lower().strip()
                 if konfirmasi_input == 'n':
                     return
 
