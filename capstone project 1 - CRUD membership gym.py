@@ -22,101 +22,147 @@ informasi_paket_pt = [
     {'Nama Paket': 'pemula', 'Harga pt': 400_000, 'jumlah_sesi_pt': 3}
 ]
 
-# Fungsi login untuk admin, maksimal 3 percobaan
+""" Fungsi admin_login digunakan untuk proses login sebagai admin FitClub. 
+Fungsi ini memulai dengan menanyakan konfirmasi apakah pengguna benar-benar ingin login sebagai admin. 
+Apabila setuju, pengguna diberikan maksimal 3 percobaan untuk memasukkan username dan password yang dicocokkan dengan data yang tersimpan di list admin_id.
+Jika berhasil login, fungsi akan mengembalikan data admin yang sesuai. 
+Jika gagal, pengguna diberikan pilihan untuk kembali ke menu utama atau mencoba lagi. 
+Apabila gagal login sebanyak 3 kali, sistem akan memberitahukan kegagalan dan mengembalikan pengguna ke menu utama."""
+
 def admin_login():
-    for attempt in range(3):
-        print('\n=== Selamat Datang Admin FitClub ===\n')
-        username_admin = input('Masukkan username anda: ')
-        password_admin = input('Masukkan password anda: ')
+    while True:
+        input_konfirmasi = input('Apakah anda yakin login menggunakan credential admin? (y atau n): ').lower().strip()
+        if input_konfirmasi == 'n':
+            return
+        elif input_konfirmasi == 'y':
+            for attempt in range(3):
+                print('\n=== Selamat Datang Admin FitClub ===\n')
+                username_admin = input('Masukkan username anda: ')
+                password_admin = input('Masukkan password anda: ')
 
-        # Cek username dan password sesuai admin_id
-        for admin in admin_id:
-            if username_admin == admin['username'] and password_admin == admin['password']:
-                print(f'\nLogin berhasil! Selamat datang {username_admin}!\n')
-                return username_admin
-            else:
-                print('\nUsername atau Password salah!\n')
-                input_utama = input('Apakah anda ingin mengulang login? (Y atau N): ').lower()
-                if input_utama == 'y':
-                    return admin_login()
+                # Cek username dan password sesuai admin_id
+                for admin in admin_id:
+                    if username_admin == admin['username'] and password_admin == admin['password']:
+                        print(f'\nLogin berhasil! Selamat datang {username_admin}!\n')
+                        return admin
                 else:
-                    return
-    else:
-        print('Anda gagal login 3 kali, silahkan tunggu 5 menit sebelum login!')
-
-# Menu khusus admin: lihat member, hapus, tambah, logout
-def menu_admin(username_admin):
-    if username_admin:
-        while True:
-            print('\n=== Menu Admin ===')
-            print('1. Lihat Informasi Member')
-            print('2. Hapus Member')
-            print('3. Tambah Member')
-            print('4. Logout')
-            input_menu = input('Masukkan pilihan (1-4): ')
-            if input_menu == '1':
-                tunjukkan_member()
-            elif input_menu == '2':
-                delete_member()
-            elif input_menu == '3':
-                tambah_member()
-            elif input_menu == '4':
-                print('Logout berhasil.')
-                return 
+                    print('\nUsername atau Password salah!\n')
+                    while True:
+                        input_utama = input('Kembali ke menu utama? (Y atau N): ').lower().strip()
+                        if input_utama == 'y':
+                            return main_menu()
+                        elif input_utama == 'n':
+                            break
+                        else:
+                            print('input harus y atau n!')
+                            continue
             else:
-                print('Pilihan tidak valid.')
-
-
-# Fungsi login untuk member: validasi nama_depan dan id_member
-def member_login():
-    for attempt in range(3):
-        print('\n=== Selamat Datang Member FitClub! ===\n')
-        while True:
-            try:
-                id_member_input = int(input('Masukkan ID member anda: '))
-                break
-            except ValueError:
-                print('ID harus berupa angka!')
-
-        nama_depan_input = input('Masukkan nama depan anda: ').lower()
-
-        # Cari member yang cocok
-        for member in data_member:
-            if member['id_member'] == id_member_input and member['nama_depan'] == nama_depan_input:
-                return member
-        else:
-            print('ID atau nama depan salah!\n')
-            input_utama = input('Kembali ke menu utama? (Y atau N): ').lower()
-            if input_utama == 'y':
-                return 
-    else:
-        print('Gagal login 3 kali, silakan tunggu 5 menit.')
-
-
-# Menu member: perpanjang membership, perpanjang PT, cek sisa, logout
-def menu_member(member):
-    if member:
-        while True:
-            print('\n=== Menu Member ===')
-            print('1. Perpanjang Membership')
-            print('2. Perpanjang Sesi Personal Trainer')
-            print('3. Cek Sisa Membership dan Sesi PT')
-            print('4. Logout')
-            input_menu = input('Masukkan pilihan (1-4): ')
-            if input_menu == '1':
-                payment_member(member)
-            elif input_menu == '2':
-                payment_member_pt(member)
-            elif input_menu == '3':
-                print(f"Membership tersisa: {member['sisa_membership_bulan']} bulan")
-                print(f"Sesi PT tersisa: {member['sisa_sesi_pt']} sesi")
-            elif input_menu == '4':
-                print('Logout berhasil.')
+                print('Anda gagal login 3 kali, silahkan tunggu 5 menit sebelum login!')
                 return
-            else:
-                print('Pilihan tidak valid.')
+        else:
+            print('input harus y atau n!')
+            continue
 
-# Menu untuk non-member: cek harga membership, daftar, atau kembali ke main menu
+
+""" Fungsi menu_admin menyediakan menu khusus untuk admin setelah berhasil login. 
+Di menu ini, admin dapat melihat daftar member yang terdaftar, menghapus member, menambah member baru, atau kembali ke menu utama. 
+Fungsi ini berulang terus hingga admin memilih untuk keluar ke menu utama."""
+
+def menu_admin(admin):
+    while True:
+        print('\n=== Menu Admin ===')
+        print('1. Lihat Informasi Member')
+        print('2. Hapus Member')
+        print('3. Tambah Member')
+        print('4. Menu Utama')
+        input_menu = input('Masukkan pilihan (1-4): ')
+        if input_menu == '1':
+            tunjukkan_member()
+        elif input_menu == '2':
+            delete_member()
+        elif input_menu == '3':
+            tambah_member()
+        elif input_menu == '4':
+            return 
+        else:
+            print('Pilihan tidak valid.')
+
+
+""" Fungsi member_login digunakan agar member FitClub dapat login ke sistem. 
+Member perlu mengonfirmasi ingin login sebagai member, lalu diberi hingga 3 kesempatan untuk memasukkan ID member (yang harus berupa angka) dan nama depan (dalam huruf kecil).
+Data tersebut divalidasi terhadap data_member yang sudah tersimpan. 
+Jika sesuai, fungsi mengembalikan data member. 
+Jika gagal login, member dapat memilih kembali ke menu utama atau mencoba lagi. 
+Setelah 3 kali gagal login, member diminta menunggu sebelum mencoba kembali. """
+
+def member_login():
+    while True:
+        input_konfirmasi = input('Apakah anda yakin login menggunakan credential member? (y atau n): ').lower().strip()
+        if input_konfirmasi == 'n':
+            return
+        elif input_konfirmasi == 'y':            
+            for attempt in range(3):
+                print('\n=== Selamat Datang Member FitClub! ===\n')
+                while True:
+                    try:
+                        id_member_input = int(input('Masukkan ID member anda: '))
+                        break
+                    except ValueError:
+                        print('ID harus berupa angka!')
+
+                nama_depan_input = input('Masukkan nama depan anda: ').lower().strip()
+
+                # Cari member yang cocok
+                for member in data_member:
+                    if member['id_member'] == id_member_input and member['nama_depan'] == nama_depan_input:
+                        return member
+                else:
+                    print('ID atau nama depan salah!\n')
+                    while True:
+                        input_utama = input('Kembali ke menu utama? (Y atau N): ').lower().strip()
+                        if input_utama == 'y':
+                            return main_menu() 
+                        elif input_utama == 'n':
+                            break
+                        else:
+                            print('Input harus y atau n!')
+                            continue
+
+            else:
+                print('Gagal login 3 kali, silakan tunggu 5 menit.')
+                return
+        else:
+            print('Input harus y atau n!')
+            continue
+
+""" Fungsi menu_member menyediakan pilihan menu untuk member FitClub yang sudah login. 
+Di sini, member dapat memperpanjang masa aktif membership, menambah jumlah sesi personal trainer, mengecek sisa membership dan sesi PT, atau kembali ke menu utama. 
+Menu ini akan terus tampil hingga member memilih keluar. """
+
+def menu_member(member):
+    while True:
+        print('\n=== Menu Member ===')
+        print('1. Perpanjang Membership')
+        print('2. Perpanjang Sesi Personal Trainer')
+        print('3. Cek Sisa Membership dan Sesi PT')
+        print('4. Menu Utama')
+        input_menu = input('Masukkan pilihan (1-4): ')
+        if input_menu == '1':
+            payment_member(member)
+        elif input_menu == '2':
+            payment_member_pt(member)
+        elif input_menu == '3':
+            print(f"\nMembership tersisa: {member['sisa_membership_bulan']} bulan")
+            print(f"Sesi PT tersisa: {member['sisa_sesi_pt']} sesi")
+        elif input_menu == '4':
+            return
+        else:   
+            print('Pilihan tidak valid.')
+
+""" Fungsi non_member_menu adalah menu khusus bagi calon member yang belum terdaftar. 
+Calon member dapat mengecek daftar harga membership, melakukan pendaftaran membership baru, atau kembali ke menu utama. 
+Menu ini memberikan kemudahan bagi pengguna baru untuk mengenal layanan FitClub."""
+
 def non_member_menu():
     while True:
         print('\n=== Menu Non-Member ===')
@@ -131,11 +177,14 @@ def non_member_menu():
         elif pilihan == '3':
             return 
 
-# Fungsi menambah member (khusus admin)
+"""Fungsi tambah_member hanya dapat diakses oleh admin. 
+Admin dapat menambahkan member baru dengan memasukkan ID yang unik, nama depan dan belakang, umur, jumlah bulan membership, serta jumlah sesi PT. 
+Fungsi ini memastikan bahwa ID member yang baru tidak boleh sama dengan ID yang sudah ada."""
+
 def tambah_member():
     input_id = input_id_unik()
-    nama_depan = input('Masukkan nama depan: ').lower()
-    nama_belakang = input('Masukkan nama belakang: ').lower()
+    nama_depan = input('Masukkan nama depan: ').lower().strip()
+    nama_belakang = input('Masukkan nama belakang: ').lower().strip()
     while True:
         try:
             umur = int(input('Masukkan umur: '))
@@ -169,7 +218,10 @@ def tambah_member():
     })
     print('Member baru berhasil ditambahkan!')
 
-# Fungsi hapus member
+"""Fungsi delete_member hanya dapat digunakan oleh admin untuk menghapus member dari data_member. 
+Fungsi ini meminta admin untuk memasukkan ID member yang ingin dihapus. 
+Setelah ditemukan, sistem akan meminta konfirmasi sebelum benar-benar menghapus data member tersebut."""
+
 def delete_member():
     while True:
         tunjukkan_member()
@@ -182,7 +234,7 @@ def delete_member():
         # Cari member sesuai ID
         for member in data_member:
             if member['id_member'] == input_id:
-                konfirmasi = input(f"Yakin hapus {member['nama_depan']} {member['nama_belakang']}? (Y/N): ").lower()
+                konfirmasi = input(f"Yakin hapus {member['nama_depan']} {member['nama_belakang']}? (Y/N): ").lower().strip()
                 if konfirmasi == 'y':
                     data_member.remove(member)
                     print('Member dihapus.')
@@ -191,25 +243,37 @@ def delete_member():
                 return  
         print('ID tidak ditemukan. Silakan coba lagi.')
 
-# Menampilkan daftar member
+"""Fungsi tunjukkan_member menampilkan seluruh daftar member FitClub lengkap dengan ID, nama, umur, sisa membership, dan jumlah sesi PT. 
+Fungsi ini berguna agar admin maupun member dapat melihat informasi terkini mengenai member yang terdaftar."""
+
 def tunjukkan_member():
     print('\n=== Daftar Member FitClub ===')
     for m in data_member:
         print(f"ID: {m['id_member']} | Nama: {m['nama_depan']} {m['nama_belakang']} | Umur: {m['umur']} | Membership: {m['sisa_membership_bulan']} bulan | Sesi PT: {m['sisa_sesi_pt']}")
 
-# Menampilkan harga membership
+"""Fungsi tunjukkan_harga_membership digunakan untuk menampilkan informasi semua paket membership yang tersedia di FitClub. 
+Setiap paket ditampilkan dengan nama, jumlah bulan membership, dan harga. 
+fungsi ini membantu calon member atau member untuk memilih paket yang sesuai."""
+
 def tunjukkan_harga_membership():
     print('\n=== Harga Membership ===')
     for p in informasi_paket:
         print(f"Paket {p['Nama Paket']}: {p['jumlah_bulan_membership']} bulan, Rp {p['Harga Membership']}")
 
-# Menampilkan harga Personal Trainer
+"""Fungsi tunjukkan_harga_pt digunakan untuk menampilkan semua paket Personal Trainer (PT) yang tersedia. 
+Sama seperti membership, setiap paket PT ditampilkan dengan nama, jumlah sesi, dan harga. 
+Fungsi ini membantu member untuk memutuskan paket PT yang sesuai dengan kebutuhan mereka."""
+
 def tunjukkan_harga_pt():
     print('\n=== Harga Personal Trainer ===')
     for pt in informasi_paket_pt:
         print(f"Paket {pt['Nama Paket']}: {pt['jumlah_sesi_pt']} sesi, Rp {pt['Harga pt']}")
 
-# Fungsi untuk proses pembayaran
+"""Fungsi proses_pembayaran bertugas untuk menangani simulasi proses pembayaran. 
+Pengguna diminta memasukkan jumlah uang yang dibayarkan, lalu dihitung apakah jumlah tersebut mencukupi atau tidak.
+Jika uang pas atau lebih, transaksi dianggap berhasil dan kembalian ditampilkan jika ada. 
+Fungsi ini memastikan pembayaran berhasil sebelum melanjutkan proses selanjutnya."""
+
 def proses_pembayaran(harga):
     print(f"Total harus dibayar: Rp {harga}")
     while True:
@@ -222,25 +286,33 @@ def proses_pembayaran(harga):
                 continue
             kembalian = bayar - harga
             if kembalian > 0:
-                print(f"Transaksi berhasil. Kembalian: Rp {kembalian}")
+                print(f"\nTransaksi berhasil. Kembalian: Rp {kembalian}")
             else:
-                print("Pembayaran pas.")
+                print("\nPembayaran pas.")
             return 'berhasil'
         except ValueError:
             print('Input harus angka.')
 
+
+"""Fungsi daftar_member_baru digunakan bagi calon member (non-member) yang ingin mendaftar membership FitClub. 
+Calon member memilih paket membership, melakukan konfirmasi, dan membayar sesuai harga paket. 
+Jika pembayaran berhasil, data member baru akan ditambahkan ke data_member."""
+
 def daftar_member_baru():
     tunjukkan_harga_membership()
     while True:
-        nama_paket = input('Pilih nama paket: ').lower()
+        nama_paket = input('Pilih nama paket: ').lower().strip()
         for paket in informasi_paket:
-            if nama_paket == paket['Nama Paket'].lower():
+            if nama_paket == paket['Nama Paket']:
                 harga = paket['Harga Membership']
                 bulan = paket['jumlah_bulan_membership']
+                konfirmasi_input = input(f'Apakah anda yakin memilih paket {nama_paket}? (y atau n): ').lower().strip()
+                if konfirmasi_input == 'n':
+                    return
                 if proses_pembayaran(harga) == 'berhasil':
                     input_id = input_id_unik()
-                    nama_depan = input('Masukkan nama depan anda: ').lower()
-                    nama_belakang = input('Masukkan nama belakang anda: ').lower()
+                    nama_depan = input('Masukkan nama depan anda: ').lower().strip()
+                    nama_belakang = input('Masukkan nama belakang anda: ').lower().strip()
                     while True:
                         try:
                             umur = int(input('Masukkan umur anda: '))
@@ -268,40 +340,57 @@ def daftar_member_baru():
         else:
             print('Nama paket tidak ditemukan.')
 
-# Perpanjang membership (untuk member)
+"""Fungsi payment_member digunakan untuk memperpanjang membership member yang sudah terdaftar. 
+Member dapat memilih paket membership, lalu melakukan konfirmasi dan pembayaran. 
+Jika pembayaran berhasil, jumlah bulan membership member akan ditambahkan sesuai paket yang dipilih."""
+
 def payment_member(member):
     tunjukkan_harga_membership()
     while True:
-        nama_paket = input('Pilih paket: ').lower()
+        nama_paket = input('Pilih paket: ').lower().strip()
         for paket in informasi_paket:
-            if nama_paket == paket['Nama Paket'].lower():
+            if nama_paket == paket['Nama Paket']:
                 bulan = paket['jumlah_bulan_membership']
                 harga = paket['Harga Membership']
+                konfirmasi_input = input(f'Apakah anda yakin memilih paket {nama_paket}? (y atau n): ').lower()
+                if konfirmasi_input == 'n':
+                    return
+
                 if proses_pembayaran(harga) == 'berhasil':
                     member['sisa_membership_bulan'] += bulan
-                    print(f"Membership anda diperpanjang menjadi {member['sisa_membership_bulan']} bulan")
+                    print(f"\nMembership anda diperpanjang menjadi {member['sisa_membership_bulan']} bulan")
                     return 
                 else:
                     continue
         print('Nama paket tidak ditemukan.')
             
             
-# Perpanjang sesi PT (untuk member)
+"""Fungsi payment_member_pt digunakan untuk menambah jumlah sesi personal trainer (PT) bagi member. 
+Member dapat memilih paket PT yang tersedia, lalu melakukan pembayaran. 
+Setelah berhasil, jumlah sesi PT member akan ditambah sesuai paket yang dipilih."""
+
 def payment_member_pt(member):
     tunjukkan_harga_pt()
     while True:
-        nama_paket = input('Pilih paket PT: ').lower()
+        nama_paket = input('Pilih paket PT: ').lower().strip()
         for paket_pt in informasi_paket_pt:
-            if nama_paket == paket_pt['Nama Paket'].lower():
+            if nama_paket == paket_pt['Nama Paket']:
                 bulan = paket_pt['jumlah_sesi_pt']
                 harga = paket_pt['Harga pt']
+                konfirmasi_input = input(f'Apakah anda yakin memilih paket {nama_paket}? (y atau n): ').lower().strip()
+                if konfirmasi_input == 'n':
+                    return
                 if proses_pembayaran(harga) == 'berhasil':
                     member['sisa_sesi_pt'] += bulan
-                    print(f'Membership anda diperpanjang menjadi {member['sisa_sesi_pt']}')
-                continue
+                    print(f'\nSesi PT anda diperpanjang menjadi {member['sisa_sesi_pt']} sesi')
+                    return
+                else:
+                    continue
         print('Nama paket tidak ditemukan.')
 
-# Validasi input ID baru (pastikan unik)
+"""Fungsi input_id_unik memastikan bahwa saat menambah member baru (baik oleh admin atau saat pendaftaran), ID member yang dimasukkan harus unik dan belum digunakan. 
+Fungsi ini akan meminta input ulang jika ID sudah dipakai oleh member lain."""
+
 def input_id_unik():
     while True:
         try:
@@ -319,7 +408,10 @@ def input_id_unik():
         else:
             return input_id
 
-# Menu utama program       
+"""Fungsi main_menu adalah pusat navigasi utama program FitClub. 
+Pengguna dapat memilih login sebagai admin, login sebagai member, mengakses menu non-member, atau keluar dari program.
+Fungsi ini selalu kembali menampilkan pilihan menu setelah selesai menjalankan fungsi lain, kecuali jika pengguna memilih keluar."""  
+     
 def main_menu():
     while True:
         print('\n=== Selamat Datang di FitClub ===')
@@ -340,7 +432,7 @@ def main_menu():
             non_member_menu()
         elif pilihan == '4':
             print('Terima kasih! Program selesai.')
-            return False
+            return
         else:
             print('Pilihan tidak valid.')
 
