@@ -317,37 +317,42 @@ def daftar_member_baru():
             if nama_paket == paket['Nama Paket']:
                 harga = paket['Harga Membership']
                 bulan = paket['jumlah_bulan_membership']
-                konfirmasi_input = input(f'Apakah anda yakin memilih paket {nama_paket}? (y atau n): ').lower().strip()
-                if konfirmasi_input == 'n':
-                    return
-                if proses_pembayaran(harga) == 'berhasil':
-                    input_id = input_id_unik()
-                    nama_depan = input('Masukkan nama depan anda: ').lower().strip()
-                    nama_belakang = input('Masukkan nama belakang anda: ').lower().strip()
-                    while True:
-                        try:
-                            umur = int(input('Masukkan umur anda: '))
-                            if umur < 12:
-                                print('Umur harus minimal 12 tahun!')
-                                continue
-                            break
-                        except ValueError:
-                            print('Umur harus berupa angka!')
-                    # Tambahkan ke data_member
-                    data_member.append({
-                        'id_member': input_id,
-                        'nama_depan': nama_depan,
-                        'nama_belakang': nama_belakang,
-                        'umur': umur,
-                        'sisa_membership_bulan': bulan,
-                        'sisa_sesi_pt': 0
-                    })
-                    print('Pendaftaran berhasil!')
-                    tunjukkan_member()
-                    return
-                else:
-                    print('Pembayaran gagal.')
-                    continue
+                while True:
+                    konfirmasi_input = input(f'Apakah anda yakin memilih paket {nama_paket}? (y atau n): ').lower().strip()
+                    if konfirmasi_input == 'n':
+                        print('Pembelian dibatalkan')
+                        return
+                    elif konfirmasi_input == 'y':
+                        if proses_pembayaran(harga) == 'berhasil':
+                            input_id = input_id_unik()
+                            nama_depan = input('Masukkan nama depan anda: ').lower().strip()
+                            nama_belakang = input('Masukkan nama belakang anda: ').lower().strip()
+                            while True:
+                                try:
+                                    umur = int(input('Masukkan umur anda: '))
+                                    if umur < 12:
+                                        print('Umur harus minimal 12 tahun!')
+                                        continue
+                                    break
+                                except ValueError:
+                                    print('Umur harus berupa angka!')
+                            # Tambahkan ke data_member
+                            data_member.append({
+                                'id_member': input_id,
+                                'nama_depan': nama_depan,
+                                'nama_belakang': nama_belakang,
+                                'umur': umur,
+                                'sisa_membership_bulan': bulan,
+                                'sisa_sesi_pt': 0
+                            })
+                            print('Pendaftaran berhasil!')
+                            tunjukkan_member()
+                            return
+                        else:
+                            print('Pembayaran gagal.')
+                            continue
+                    else:
+                        print('input harus y atau n!')
         else:
             print('Nama paket tidak ditemukan.')
 
